@@ -28,22 +28,4 @@ class DomainTask<T> extends Task<T> {
       throw DomainException();
     }
   }
-
-  static DomainTask<R> pipe<T, R>(
-    Future<Result<T>> Function() fn,
-    FutureOr<R> Function(T) pipeFn,
-  ) {
-    return DomainTask<R>(() async {
-      final firstResult = await fn();
-      final pipeResult = Result(
-        message: firstResult.message,
-        value: await pipeFn(firstResult.value),
-      );
-      return pipeResult;
-    });
-  }
-
-  // static task<T>(Task<T> task) {
-  //   return DomainTask(task._fn);
-  // }
 }

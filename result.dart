@@ -1,3 +1,5 @@
+import 'dart:async';
+
 class Result<T> {
   String? message;
   T value;
@@ -10,7 +12,7 @@ class Result<T> {
 }
 
 class Task<T> {
-  final Future<Result<T>> Function() _fn;
+  final FutureOr<Result<T>> Function() _fn;
 
   Task(this._fn);
 
@@ -25,4 +27,22 @@ class Task<T> {
   Future<Result<T>> get result async {
     return await _fn();
   }
+
+  // static Task<R> pipe<T, R>(
+  //   Future<Result<T>> Function() fn,
+  //   FutureOr<R> Function(T) pipeFn,
+  // ) {
+  //   return Task<R>(() async {
+  //     final firstResult = await fn();
+  //     final pipeResult = Result(
+  //       message: firstResult.message,
+  //       value: await pipeFn(firstResult.value),
+  //     );
+  //     return pipeResult;
+  //   });
+  // }
+
+  // static Task<T> fromValue<T>(T value) {
+  //   return Task(() => Result(value: value));
+  // }
 }
