@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:latin_library/common/ui/widgets/jd_network_image.dart';
+
+import 'jd_network_image.dart';
 
 class JdProfilePhoto extends StatefulWidget {
   final void Function()? onTap;
