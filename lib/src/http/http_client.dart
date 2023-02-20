@@ -7,48 +7,11 @@ import '../error/http_client_exception.dart';
 import '../error/repository_exception.dart';
 import '../result.dart';
 import 'dio_builder.dart';
+import 'ire_client_task.dart';
 
 typedef JsonMap = Map<String, dynamic>;
-// typedef SerializerFn<T> = T Function(JsonMap);
+
 typedef SerializerFn<T> = T Function(dynamic);
-
-extension SerializerFnExtensions<T> on T Function(Map<String, dynamic>) {
-  List<T> Function(dynamic) toListSerializer() {
-    return (value) => (value as List).map((item) => this(item)).toList();
-  }
-
-  T Function(dynamic) toSerializer() {
-    return (value) => this(value);
-  }
-}
-
-void _printRequest(RequestOptions requestOptions) {
-  if (kDebugMode) {
-    print('[🌐][🚀] METHOD: ${requestOptions.method}');
-    print('[🌐][🚀] URL: ${requestOptions.uri}');
-    print('[🌐][🚀] HEADERS: ${jsonEncode(requestOptions.headers)}');
-    if (requestOptions.data != null) {
-      try {
-        print('[🌐][🚀] DATA: ${jsonEncode(requestOptions.data)}');
-      } catch (e) {
-        print('[🌐][🚀] DATA: ${requestOptions.data}');
-      }
-    }
-  }
-}
-
-void _printResponse(Response response) {
-  if (kDebugMode) {
-    print('[🌐][🛬] HEADERS: ${jsonEncode(response.headers.map)}');
-    if (response.data != null) {
-      try {
-        print('[🌐][🛬] DATA: ${jsonEncode(response.data)}');
-      } catch (e) {
-        print('[🌐][🛬] DATA: ${response.data}');
-      }
-    }
-  }
-}
 
 class HttpClient {
   final Dio _dio;
@@ -85,20 +48,29 @@ class HttpClient {
           },
         );
 
-  Future<Result<T>> tryRequest<T>({
+  Future<IreClientResult<T>> tryRequest<T>({
     required Future<Response<dynamic>> Function() request,
     // required SerializerFn<T> serializer,
     required T Function(Object) serializer,
   }) async {
     try {
       final response = await request();
+      response.headers;
       final message = response.data!['message'];
       final data = response.data!['data'];
       // https://stackoverflow.com/a/68512449/11026079
       if (serializer.runtimeType.toString().endsWith('void')) {
-        return Result(message: message, value: null as T);
+        return IreClientResult(
+          headers: response.headers,
+          value: null as T,
+          message: message,
+        );
       }
-      return Result(message: message, value: serializer(data));
+      return IreClientResult(
+        headers: response.headers,
+        value: serializer(data),
+        message: message,
+      );
     } catch (e, s) {
       if (kDebugMode) {
         print('[HttpClient] Error: $e');
@@ -166,5 +138,43 @@ class HttpClient {
           request: () => _dio.post(path, data: data),
           serializer: serializer,
         ));
+  }
+}
+
+void _printRequest(RequestOptions requestOptions) {
+  if (kDebugMode) {
+    print('[🌐][🚀] METHOD: ${requestOptions.method}');
+    print('[🌐][🚀] URL: ${requestOptions.uri}');
+    print('[🌐][🚀] HEADERS: ${jsonEncode(requestOptions.headers)}');
+    if (requestOptions.data != null) {
+      try {
+        print('[🌐][🚀] DATA: ${jsonEncode(requestOptions.data)}');
+      } catch (e) {
+        print('[🌐][🚀] DATA: ${requestOptions.data}');
+      }
+    }
+  }
+}
+
+void _printResponse(Response response) {
+  if (kDebugMode) {
+    print('[🌐][🛬] HEADERS: ${jsonEncode(response.headers.map)}');
+    if (response.data != null) {
+      try {
+        print('[🌐][🛬] DATA: ${jsonEncode(response.data)}');
+      } catch (e) {
+        print('[🌐][🛬] DATA: ${response.data}');
+      }
+    }
+  }
+}
+
+extension SerializerFnExtensions<T> on T Function(Map<String, dynamic>) {
+  SerializerFn<List<T>> toListSerializer() {
+    return (value) => (value as List).map((item) => this(item)).toList();
+  }
+
+  SerializerFn<T> toSerializer() {
+    return (value) => this(value);
   }
 }
