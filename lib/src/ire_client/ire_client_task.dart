@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import '../result.dart';
+import '../task.dart';
 
 class IreClientResult<T> extends Result<T> {
   final Headers headers;

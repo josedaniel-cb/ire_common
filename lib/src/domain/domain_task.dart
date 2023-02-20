@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import '../error/domain_exception.dart';
+import 'domain_exception.dart';
 import '../ire_client/ire_client_exception.dart';
 import '../error/repository_exception.dart';
-import '../result.dart';
+import '../task.dart';
 
 class DomainTask<T> extends Task<T> {
   // Convert fn to Task

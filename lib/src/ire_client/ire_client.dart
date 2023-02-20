@@ -6,7 +6,7 @@ import 'ire_client_exception.dart';
 import 'dio_builder.dart';
 import 'ire_client_task.dart';
 import '../error/repository_exception.dart';
-import '../result.dart';
+import '../task.dart';
 
 typedef JsonMap = Map<String, dynamic>;
 
