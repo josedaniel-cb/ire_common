@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../error/domain_exception.dart';
-import '../error/http_client_exception.dart';
+import '../ire_client/ire_client_exception.dart';
 import '../error/repository_exception.dart';
 import '../result.dart';
 
@@ -15,7 +15,7 @@ class DomainTask<T> extends Task<T> {
     try {
       return await fn();
     } catch (e, s) {
-      if (e is HttpClientException || e is RepositoryException) {
+      if (e is IreClientException || e is RepositoryException) {
         rethrow;
       }
 

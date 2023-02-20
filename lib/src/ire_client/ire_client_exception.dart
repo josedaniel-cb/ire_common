@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
-import 'base_exception.dart';
+import '../error/base_exception.dart';
 
 String _handleResponseError(DioError e) {
   final response = e.response;
@@ -45,11 +45,11 @@ String _handleError(DioError e) {
   return 'This line will be never reached';
 }
 
-class HttpClientException extends BaseException {
-  HttpClientException._(String reason) : super(reason);
+class IreClientException extends BaseException {
+  IreClientException._(String reason) : super(reason);
 
-  factory HttpClientException.dio(DioError e) {
+  factory IreClientException.dio(DioError e) {
     final message = _handleError(e);
-    return HttpClientException._(message);
+    return IreClientException._(message);
   }
 }

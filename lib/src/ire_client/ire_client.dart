@@ -1,22 +1,21 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-import '../error/http_client_exception.dart';
-import '../error/repository_exception.dart';
-import '../result.dart';
+import 'debug/print.dart';
+import 'ire_client_exception.dart';
 import 'dio_builder.dart';
 import 'ire_client_task.dart';
+import '../error/repository_exception.dart';
+import '../result.dart';
 
 typedef JsonMap = Map<String, dynamic>;
 
 typedef SerializerFn<T> = T Function(dynamic);
 
-class HttpClient {
+class IreClient {
   final Dio _dio;
 
-  HttpClient({
+  IreClient({
     required String baseUrl,
     void Function(RequestOptions, RequestInterceptorHandler)? onRequest,
     void Function(Response<dynamic>, ResponseInterceptorHandler)? onResponse,
@@ -24,14 +23,14 @@ class HttpClient {
   }) : _dio = DioBuilder().build(
           baseUrl: baseUrl,
           onRequest: (options, handler) {
-            _printRequest(options);
+            printRequest(options);
             if (onRequest == null) {
               return handler.next(options);
             }
             return onRequest(options, handler);
           },
           onResponse: (response, handler) {
-            _printResponse(response);
+            printResponse(response);
             if (onResponse == null) {
               return handler.next(response);
             }
@@ -39,7 +38,7 @@ class HttpClient {
           },
           onError: (error, handler) {
             if (error.response != null) {
-              _printResponse(error.response!);
+              printResponse(error.response!);
             }
             if (onError == null) {
               return handler.next(error);
@@ -78,7 +77,7 @@ class HttpClient {
       }
 
       if (e is DioError) {
-        throw HttpClientException.dio(e);
+        throw IreClientException.dio(e);
       }
 
       throw RepositoryException();
@@ -138,34 +137,6 @@ class HttpClient {
           request: () => _dio.post(path, data: data),
           serializer: serializer,
         ));
-  }
-}
-
-void _printRequest(RequestOptions requestOptions) {
-  if (kDebugMode) {
-    print('[🌐][🚀] METHOD: ${requestOptions.method}');
-    print('[🌐][🚀] URL: ${requestOptions.uri}');
-    print('[🌐][🚀] HEADERS: ${jsonEncode(requestOptions.headers)}');
-    if (requestOptions.data != null) {
-      try {
-        print('[🌐][🚀] DATA: ${jsonEncode(requestOptions.data)}');
-      } catch (e) {
-        print('[🌐][🚀] DATA: ${requestOptions.data}');
-      }
-    }
-  }
-}
-
-void _printResponse(Response response) {
-  if (kDebugMode) {
-    print('[🌐][🛬] HEADERS: ${jsonEncode(response.headers.map)}');
-    if (response.data != null) {
-      try {
-        print('[🌐][🛬] DATA: ${jsonEncode(response.data)}');
-      } catch (e) {
-        print('[🌐][🛬] DATA: ${response.data}');
-      }
-    }
   }
 }
 
