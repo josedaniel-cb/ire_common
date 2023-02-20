@@ -156,4 +156,15 @@ class HttpClient {
           serializer: serializer,
         ));
   }
+
+  Task<T> postForm<T>({
+    required String path,
+    required SerializerFn<T> serializer,
+    required FormData data,
+  }) {
+    return Task(() => tryRequest(
+          request: () => _dio.post(path, data: data),
+          serializer: serializer,
+        ));
+  }
 }
