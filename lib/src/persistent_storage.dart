@@ -44,4 +44,16 @@ class PersistentStorage {
     }
     await _prefs.setString(key, jsonEncode(value));
   }
+
+  List<String>? getStringList(String key) {
+    return _prefs.getStringList(key);
+  }
+
+  Future<void> setStringList(String key, List<String>? value) async {
+    if (value == null) {
+      await _prefs.remove(key);
+      return;
+    }
+    await _prefs.setStringList(key, value);
+  }
 }
