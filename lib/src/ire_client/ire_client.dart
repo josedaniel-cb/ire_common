@@ -17,9 +17,21 @@ class IreClient {
 
   IreClient({
     required String baseUrl,
-    void Function(RequestOptions, RequestInterceptorHandler)? onRequest,
-    void Function(Response<dynamic>, ResponseInterceptorHandler)? onResponse,
-    void Function(DioError, ErrorInterceptorHandler)? onError,
+    void Function(
+      RequestOptions options,
+      RequestInterceptorHandler handler,
+    )?
+        onRequest,
+    void Function(
+      Response<dynamic> response,
+      ResponseInterceptorHandler handler,
+    )?
+        onResponse,
+    void Function(
+      DioError error,
+      ErrorInterceptorHandler handler,
+    )?
+        onError,
   }) : _dio = DioBuilder().build(
           baseUrl: baseUrl,
           onRequest: (options, handler) {
@@ -84,56 +96,56 @@ class IreClient {
     }
   }
 
-  Task<T> get<T>({
+  IreClientTask<T> get<T>({
     required String path,
     required SerializerFn<T> serializer,
     Map<String, dynamic>? queryParameters,
   }) {
-    return Task(() => tryRequest(
+    return IreClientTask(() => tryRequest(
           request: () => _dio.get(path, queryParameters: queryParameters),
           serializer: serializer,
         ));
   }
 
-  Task<T> post<T>({
+  IreClientTask<T> post<T>({
     required String path,
     required SerializerFn<T> serializer,
     required JsonMap data,
   }) {
-    return Task(() => tryRequest(
+    return IreClientTask(() => tryRequest(
           request: () => _dio.post(path, data: data),
           serializer: serializer,
         ));
   }
 
-  Task<T> put<T>({
+  IreClientTask<T> put<T>({
     required String path,
     required SerializerFn<T> serializer,
     required JsonMap data,
   }) {
-    return Task(() => tryRequest(
+    return IreClientTask(() => tryRequest(
           request: () => _dio.put(path, data: data),
           serializer: serializer,
         ));
   }
 
-  Task<T> putForm<T>({
+  IreClientTask<T> putForm<T>({
     required String path,
     required SerializerFn<T> serializer,
     required FormData data,
   }) {
-    return Task(() => tryRequest(
+    return IreClientTask(() => tryRequest(
           request: () => _dio.put(path, data: data),
           serializer: serializer,
         ));
   }
 
-  Task<T> postForm<T>({
+  IreClientTask<T> postForm<T>({
     required String path,
     required SerializerFn<T> serializer,
     required FormData data,
   }) {
-    return Task(() => tryRequest(
+    return IreClientTask(() => tryRequest(
           request: () => _dio.post(path, data: data),
           serializer: serializer,
         ));
