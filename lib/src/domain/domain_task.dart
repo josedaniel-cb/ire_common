@@ -7,7 +7,7 @@ import '../ire_client/ire_client_exception.dart';
 import '../error/repository_exception.dart';
 import '../task.dart';
 
-class DomainTask<T> extends Task<T> {
+class DomainTask<T> extends Task<Result<T>, T> {
   // Convert fn to Task
   DomainTask(Future<Result<T>> Function() fn) : super(() => _try(fn));
 
@@ -24,6 +24,9 @@ class DomainTask<T> extends Task<T> {
         print('[DomainTask] Stacktrace:\n$s');
       }
 
+      if (e is DomainException) {
+        rethrow;
+      }
       throw DomainException();
     }
   }

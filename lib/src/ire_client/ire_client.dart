@@ -14,9 +14,11 @@ typedef SerializerFn<T> = T Function(dynamic);
 
 class IreClient {
   final Dio _dio;
+  final Result<dynamic> Function(dynamic data)? responseDataToResultFn;
 
   IreClient({
     required String baseUrl,
+    this.responseDataToResultFn,
     void Function(
       RequestOptions options,
       RequestInterceptorHandler handler,
@@ -66,21 +68,27 @@ class IreClient {
   }) async {
     try {
       final response = await request();
-      response.headers;
-      final message = response.data!['message'];
-      final data = response.data!['data'];
+      final responseDataToResult = (responseDataToResultFn ??
+          (data) => Result(
+                message: data['message'],
+                value: data!['data'],
+              ));
+      final partialResult = responseDataToResult(response.data);
+
+      // final message = response.data!['message'];
+      // final data = response.data!['data'];
       // https://stackoverflow.com/a/68512449/11026079
       if (serializer.runtimeType.toString().endsWith('void')) {
         return IreClientResult(
           headers: response.headers,
           value: null as T,
-          message: message,
+          message: partialResult.message,
         );
       }
       return IreClientResult(
         headers: response.headers,
-        value: serializer(data),
-        message: message,
+        value: serializer(partialResult.value),
+        message: partialResult.message,
       );
     } catch (e, s) {
       if (kDebugMode) {

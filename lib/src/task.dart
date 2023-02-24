@@ -1,24 +1,7 @@
 import 'dart:async';
 
-// abstract class AbstractTask<R> {
-//   final FutureOr<R> Function() _fn;
-
-//   AbstractTask(this._fn);
-
-//   Future<R> get result async {
-//     return await _fn();
-//   }
-// }
-
-class Result<T> {
-  String? message;
-  T value;
-
-  Result({this.message, required this.value});
-}
-
-class Task<T> {
-  final FutureOr<Result<T>> Function() _fn;
+abstract class Task<ResultT extends Result<T>, T> {
+  final FutureOr<ResultT> Function() _fn;
 
   Task(this._fn);
 
@@ -26,7 +9,14 @@ class Task<T> {
     return (await _fn()).value;
   }
 
-  Future<Result<T>> get result async {
+  Future<ResultT> get result async {
     return await _fn();
   }
+}
+
+class Result<T> {
+  String? message;
+  T value;
+
+  Result({this.message, required this.value});
 }
