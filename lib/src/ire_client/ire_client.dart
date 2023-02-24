@@ -115,6 +115,17 @@ class IreClient {
         ));
   }
 
+  IreClientTask<T> delete<T>({
+    required String path,
+    required SerializerFn<T> serializer,
+    Map<String, dynamic>? queryParameters,
+  }) {
+    return IreClientTask(() => tryRequest(
+          request: () => _dio.delete(path, queryParameters: queryParameters),
+          serializer: serializer,
+        ));
+  }
+
   IreClientTask<T> post<T>({
     required String path,
     required SerializerFn<T> serializer,
