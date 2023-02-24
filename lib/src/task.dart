@@ -1,9 +1,9 @@
 import 'dart:async';
 
-abstract class Task<ResultT extends Result<T>, T> {
+abstract class AbstractTask<ResultT extends Result<T>, T> {
   final FutureOr<ResultT> Function() _fn;
 
-  Task(this._fn);
+  AbstractTask(this._fn);
 
   Future<T> get value async {
     return (await _fn()).value;
@@ -12,6 +12,10 @@ abstract class Task<ResultT extends Result<T>, T> {
   Future<ResultT> get result async {
     return await _fn();
   }
+}
+
+class SimpleTask<T> extends AbstractTask<Result<T>, T> {
+  SimpleTask(super.fn);
 }
 
 class Result<T> {

@@ -7,7 +7,7 @@ import '../ire_client/ire_client_exception.dart';
 import '../error/repository_exception.dart';
 import '../task.dart';
 
-class DomainTask<T> extends Task<Result<T>, T> {
+class DomainTask<T> extends AbstractTask<Result<T>, T> {
   // Convert fn to Task
   DomainTask(Future<Result<T>> Function() fn) : super(() => _try(fn));
 

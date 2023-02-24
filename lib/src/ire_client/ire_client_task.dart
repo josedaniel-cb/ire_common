@@ -13,6 +13,7 @@ class IreClientResult<T> extends Result<T> {
   });
 }
 
-class IreClientTask<T> extends Task<IreClientResult<T>, T> {
-  IreClientTask(Future<IreClientResult<T>> Function() fn) : super(fn);
+class IreClientTask<T> extends AbstractTask<IreClientResult<T>, T> {
+  IreClientTask(super.fn);
+  // IreClientTask(Future<IreClientResult<T>> Function() fn) : super(fn);
 }
