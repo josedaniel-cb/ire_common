@@ -1,10 +1,17 @@
-abstract class BaseException implements Exception {
-  final String reason;
+import 'package:flutter/foundation.dart';
 
-  BaseException(this.reason);
+// abstract class BaseException implements Exception {
+abstract class BaseException {
+  final String reason;
+  final String? devReason;
+
+  BaseException(this.reason, [this.devReason]);
 
   @override
   String toString() {
-    return reason;
+    if (kReleaseMode) {
+      return reason;
+    }
+    return devReason != null ? devReason! : reason;
   }
 }

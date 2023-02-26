@@ -46,10 +46,11 @@ String _handleError(DioError e) {
 }
 
 class IreClientException extends BaseException {
-  IreClientException._(String reason) : super(reason);
+  IreClientException._(String reason, String devReason)
+      : super(reason, '[IreClient] $devReason (in production: "$reason")');
 
   factory IreClientException.dio(DioError e) {
-    final message = _handleError(e);
-    return IreClientException._(message);
+    final reason = _handleError(e);
+    return IreClientException._(reason, e.message);
   }
 }
