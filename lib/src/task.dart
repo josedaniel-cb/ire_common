@@ -14,9 +14,9 @@ abstract class AbstractTask<ResultT extends Result<T>, T> {
   }
 }
 
-// class SimpleTask<T> extends AbstractTask<Result<T>, T> {
-//   SimpleTask(super.fn);
-// }
+class SimpleTask<T> extends AbstractTask<Result<T>, T> {
+  SimpleTask(super.fn);
+}
 
 typedef Task<T> = AbstractTask<Result<T>, T>;
 
