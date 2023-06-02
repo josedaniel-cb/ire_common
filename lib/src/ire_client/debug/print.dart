@@ -23,7 +23,8 @@ void printResponse(Response response) {
     print('[🌐][🛬] HEADERS: ${jsonEncode(response.headers.map)}');
     if (response.data != null) {
       try {
-        print('[🌐][🛬] DATA: ${jsonEncode(response.data)}');
+        final json = jsonEncode(response.data);
+        print('[🌐][🛬] DATA: $json');
       } catch (e) {
         print('[🌐][🛬] DATA: ${response.data}');
       }
